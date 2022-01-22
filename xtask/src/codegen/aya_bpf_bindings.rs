@@ -52,6 +52,7 @@ pub fn codegen(opts: &Options) -> Result<(), anyhow::Error> {
             "user_pt_regs",
             "xdp_action",
             "bpf_adj_room_mode",
+            "bpf_sk_lookup",
         ];
         let vars = ["BPF_.*", "bpf_.*", "TC_ACT_.*", "SOL_SOCKET", "SO_.*"];
 
