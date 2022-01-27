@@ -113,6 +113,7 @@ pub enum ProgramSection {
     SkMsg { name: String },
     SkSkbStreamParser { name: String },
     SkSkbStreamVerdict { name: String },
+    SkLookup { name: String },
     SockOps { name: String },
     SchedClassifier { name: String },
     CgroupSkbIngress { name: String },
@@ -140,6 +141,7 @@ impl ProgramSection {
             ProgramSection::SkMsg { name } => name,
             ProgramSection::SkSkbStreamParser { name } => name,
             ProgramSection::SkSkbStreamVerdict { name } => name,
+            ProgramSection::SkLookup { name } => name,
             ProgramSection::SockOps { name } => name,
             ProgramSection::SchedClassifier { name } => name,
             ProgramSection::CgroupSkbIngress { name } => name,
@@ -197,6 +199,7 @@ impl FromStr for ProgramSection {
             },
             "sk_skb/stream_parser" => SkSkbStreamParser { name },
             "sk_skb/stream_verdict" => SkSkbStreamVerdict { name },
+            "sk_lookup" => SkLookup { name },
             "sockops" => SockOps { name },
             "classifier" => SchedClassifier { name },
             "cgroup_skb/ingress" => CgroupSkbIngress { name },
@@ -1387,6 +1390,27 @@ mod tests {
             obj.programs.get("my_parser"),
             Some(Program {
                 section: ProgramSection::SkSkbStreamParser { .. },
+                ..
+            })
+        );
+    }
+
+    #[test]
+    fn test_parse_section_sk_lookup() {
+        let mut obj = fake_obj();
+
+        assert_matches!(
+            obj.parse_section(fake_section(
+                BpfSectionKind::Program,
+                "sk_lookup/foo",
+                bytes_of(&fake_ins())
+            )),
+            Ok(())
+        );
+        assert_matches!(
+            obj.programs.get("foo"),
+            Some(Program {
+                section: ProgramSection::SkLookup { .. },
                 ..
             })
         );
